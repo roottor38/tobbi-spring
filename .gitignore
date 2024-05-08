@@ -14,3 +14,8 @@ gradle-*
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+.gradle/
+gradle/
+build/
+
