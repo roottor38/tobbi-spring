@@ -1,5 +1,16 @@
 .idea
 .iml
-target
+target/
 gradlew
 gradlew.bat
+gradle-*
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
