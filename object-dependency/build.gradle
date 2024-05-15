@@ -13,6 +13,14 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     compileOnly('org.projectlombok:lombok:1.18.22')
+//    implementation 'net.sourceforge.cglib:com.springsource.net.sf.cglib:2.2.0'
+//    implementation 'org.apache.commons:com.springsource.org.apache.commons.logging:1.1.1'
+    implementation 'org.springframework:spring-asm:3.0.7.RELEASE'
+    implementation 'org.springframework:spring-beans:3.0.7.RELEASE'
+    implementation 'org.springframework:spring-context:3.0.7.RELEASE'
+    implementation 'org.springframework:spring-core:3.0.7.RELEASE'
+
+
 }
 
 test {
