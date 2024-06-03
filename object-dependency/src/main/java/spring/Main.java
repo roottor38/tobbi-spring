@@ -19,6 +19,6 @@ public class Main {
 
         userDao.add(user);
 
-        System.out.println(user.getId() + " 등록 성공");
+//        System.out.println(user.getId() + " 등록 성공");
     }
 }
