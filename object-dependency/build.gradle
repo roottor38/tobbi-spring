@@ -14,16 +14,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.springframework:spring-test:5.3.18'
     testImplementation 'org.assertj:assertj-core:3.23.1'
-    compileOnly('org.projectlombok:lombok:1.18.22')
-//    implementation 'net.sourceforge.cglib:com.springsource.net.sf.cglib:2.2.0'
-//    implementation 'org.apache.commons:com.springsource.org.apache.commons.logging:1.1.1'
-    implementation 'org.springframework:spring-asm:3.0.7.RELEASE'
-    implementation 'org.springframework:spring-beans:3.0.7.RELEASE'
-    implementation 'org.springframework:spring-context:3.0.7.RELEASE'
-    implementation 'org.springframework:spring-core:3.0.7.RELEASE'
-    implementation 'org.springframework:spring-tx:5.3.22' // 사용 중인 Spring 버전에 맞게 수정
-
-
+    implementation 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    implementation 'org.springframework:spring-beans:6.0.21'
+    implementation 'org.springframework:spring-context:6.0.21'
+    implementation 'org.springframework:spring-jdbc:6.0.21'
+    implementation 'com.mysql:mysql-connector-j:8.2.0'
 }
 
 test {
