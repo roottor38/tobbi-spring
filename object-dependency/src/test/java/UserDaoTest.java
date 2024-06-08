@@ -65,4 +65,6 @@ public class UserDaoTest {
     assertThat(userDao.getCount()).isEqualTo(0);
     assertThrows(EmptyResultDataAccessException.class, () -> userDao.get("unknown_id"));
   }
+
+
 }
