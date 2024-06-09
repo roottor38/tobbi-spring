@@ -10,7 +10,7 @@
         <property name="password" value="book"/>
     </bean>
 
-    <bean id="userDao" class="spring.object.dependency.UserDao">
+    <bean id="userDao" class="spring.dao.UserDao">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 

@@ -1,27 +1,30 @@
-package spring.object.dependency;
+package spring.dao;
 
 import java.sql.*;
 import javax.sql.DataSource;
 import lombok.Setter;
-import spring.dao.AddStatement;
-import spring.dao.DeleteAllStatement;
-import spring.dao.StatementStrategy;
+import spring.object.dependency.User;
 
 @Setter
 public class UserDao {
 
     private DataSource dataSource;
+    private JdbcContext jdbcContext;
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+        this.jdbcContext = new JdbcContext();
+        this.jdbcContext.setDataSource(dataSource);
+    }
 
     public void add(User user) throws SQLException {
-        StatementStrategy st = c -> {
-            PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO users (id, name, password) VALUES (?, ?, ?)");
+        jdbcContext.workWithStatementStrategy(c -> {
+            PreparedStatement ps = c.prepareStatement("INSERT INTO users (id, name, password) VALUES (?, ?, ?)");
             ps.setString(1, user.getId());
             ps.setString(2, user.getName());
             ps.setString(3, user.getPassword());
             return ps;
-        };
-        jdbcContextWithStatementStrategy(st);
+        });
     }
 
     public User get(String id) throws SQLException {
