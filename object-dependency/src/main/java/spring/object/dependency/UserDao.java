@@ -13,25 +13,14 @@ public class UserDao {
     private DataSource dataSource;
 
     public void add(User user) throws SQLException {
-        class AddStatement implements StatementStrategy {
-
-            final User user;
-
-            public AddStatement(User user) {
-                this.user = user;
-            }
-
-            @Override
-            public PreparedStatement makeStatement(Connection c) throws SQLException {
-                PreparedStatement ps = c.prepareStatement(
-                    "INSERT INTO users (id, name, password) VALUES (?, ?, ?)");
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
-                return ps;
-            }
-        }
-        StatementStrategy st = new AddStatement(user);
+        StatementStrategy st = c -> {
+            PreparedStatement ps = c.prepareStatement(
+                "INSERT INTO users (id, name, password) VALUES (?, ?, ?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            return ps;
+        };
         jdbcContextWithStatementStrategy(st);
     }
 
@@ -56,7 +45,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        StatementStrategy st = new DeleteAllStatement();
+        StatementStrategy st = c -> c.prepareStatement("DELETE from users");
         jdbcContextWithStatementStrategy(st);
     }
 
@@ -75,28 +64,8 @@ public class UserDao {
     }
 
     public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
-        Connection c = null;
-        PreparedStatement ps = null;
-        try {
-            c = dataSource.getConnection();
-            ps = stmt.makeStatement(c);
+        try (Connection c = dataSource.getConnection(); PreparedStatement ps = stmt.makeStatement(c)) {
             ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        }
-        finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                }
-            }
         }
     }
 }
