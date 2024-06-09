@@ -18,4 +18,4 @@ gradle-*
 .gradle/
 gradle/
 build/
-
+data/mysql/

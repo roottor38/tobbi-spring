@@ -3,6 +3,9 @@ package spring.object.dependency;
 import java.sql.*;
 import javax.sql.DataSource;
 import lombok.Setter;
+import spring.dao.AddStatement;
+import spring.dao.DeleteAllStatement;
+import spring.dao.StatementStrategy;
 
 @Setter
 public class UserDao {
@@ -10,17 +13,8 @@ public class UserDao {
     private DataSource dataSource;
 
     public void add(User user) throws SQLException {
-
-        try (
-            Connection c = dataSource.getConnection();
-            PreparedStatement ps = c.prepareStatement(
-                "insert into users(id, name, password) values(?, ?, ?)")
-        ) {
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            ps.executeUpdate();
-        }
+        StatementStrategy st = new AddStatement(user);
+        jdbcContextWithStatementStrategy(st);
     }
 
     public User get(String id) throws SQLException {
@@ -44,12 +38,8 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        try (
-            Connection c = dataSource.getConnection();
-            PreparedStatement ps = c.prepareStatement("DELETE from users")
-        ) {
-            ps.executeUpdate();
-        }
+        StatementStrategy st = new DeleteAllStatement();
+        jdbcContextWithStatementStrategy(st);
     }
 
     public int getCount() throws SQLException {
@@ -64,5 +54,31 @@ public class UserDao {
             }
         }
         return count;
+    }
+
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
+        Connection c = null;
+        PreparedStatement ps = null;
+        try {
+            c = dataSource.getConnection();
+            ps = stmt.makeStatement(c);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+        finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if (c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
     }
 }
