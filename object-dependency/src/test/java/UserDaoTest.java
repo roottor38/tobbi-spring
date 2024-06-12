@@ -10,7 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import spring.object.dependency.User;
-import spring.object.dependency.UserDao;
+import spring.dao.UserDao;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
@@ -65,4 +65,6 @@ public class UserDaoTest {
     assertThat(userDao.getCount()).isEqualTo(0);
     assertThrows(EmptyResultDataAccessException.class, () -> userDao.get("unknown_id"));
   }
+
+
 }

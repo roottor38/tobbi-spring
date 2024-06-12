@@ -1,8 +1,8 @@
 package spring;
 
-import spring.object.dependency.DaoFactory;
+import spring.dao.DaoFactory;
 import spring.object.dependency.User;
-import spring.object.dependency.UserDao;
+import spring.dao.UserDao;
 
 import java.sql.SQLException;
 
