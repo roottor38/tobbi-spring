@@ -1,74 +1,57 @@
 package spring.dao;
 
 import java.sql.*;
+import java.util.List;
 import javax.sql.DataSource;
 import lombok.Setter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import spring.object.dependency.User;
 
 @Setter
 public class UserDao {
 
-    private DataSource dataSource;
-    private JdbcContext jdbcContext;
+    private JdbcTemplate jdbcTemplate;
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-        this.jdbcContext = new JdbcContext();
-        this.jdbcContext.setDataSource(dataSource);
+    private RowMapper<User> userMapper = (rs, rowNum) -> {
+        User user = new User();
+        user.setId(rs.getString("id"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
+        return user;
+    };
+
+    public void setJdbcTemplate(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(User user) throws SQLException {
-        jdbcContext.workWithStatementStrategy(c -> {
-            PreparedStatement ps = c.prepareStatement("INSERT INTO users (id, name, password) VALUES (?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            return ps;
+    public void add(User user) {
+      jdbcTemplate.update("INSERT INTO users (id, name, password) VALUES (?, ?, ?)", user.getId(), user.getName(), user.getPassword());
+    }
+
+    public User get(String id) {
+        return jdbcTemplate.queryForObject(
+            "SELECT * FROM users WHERE id = ?"
+            , new Object[] {id}
+            , userMapper
+        );
+    }
+
+    public List<User> getAll() {
+        return jdbcTemplate.query("SELECT * FROM users", (rs, rowNum) -> {
+            User user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+            return user;
         });
     }
 
-    public User get(String id) throws SQLException {
-        User user = null;
-        try (
-            Connection c = dataSource.getConnection();
-            PreparedStatement ps = c.prepareStatement(
-                "select * from users where id = ?")
-        ) {
-            ps.setString(1, id);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                user = new User();
-                user.setId(rs.getString("id"));
-                user.setName(rs.getString("name"));
-                user.setPassword(rs.getString("password"));
-            }
-        }
-        return user;
+    public void deleteAll() {
+      jdbcTemplate.update("DELETE FROM users");
     }
 
-    public void deleteAll() throws SQLException {
-        StatementStrategy st = c -> c.prepareStatement("DELETE from users");
-        jdbcContextWithStatementStrategy(st);
-    }
-
-    public int getCount() throws SQLException {
-        int count = 0;
-
-        try (Connection c = dataSource.getConnection();
-            PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM users");
-            ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-        }
-        return count;
-    }
-
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
-        try (Connection c = dataSource.getConnection(); PreparedStatement ps = stmt.makeStatement(c)) {
-            ps.executeUpdate();
-        }
+    public int getCount() {
+      return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class);
     }
 }

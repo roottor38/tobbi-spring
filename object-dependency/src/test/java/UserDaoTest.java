@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.SQLException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,17 @@ public class UserDaoTest {
 
   @Autowired
   private UserDao userDao;
+
+  private static User user1;
+  private static User user2;
+  private static User user3;
+
+  @BeforeAll
+  public static void setUp() {
+    user1 = new User("id1", "name1", "password1");
+    user2 = new User("id2", "name2", "password2");
+    user3 = new User("id3", "name3", "password3");
+  }
 
   @Test
   public void addAndGet() throws SQLException, ClassNotFoundException {
@@ -66,5 +78,27 @@ public class UserDaoTest {
     assertThrows(EmptyResultDataAccessException.class, () -> userDao.get("unknown_id"));
   }
 
+  @Test
+  public void getAll() throws SQLException, ClassNotFoundException {
+    userDao.deleteAll();
+    assertThat(userDao.getCount()).isEqualTo(0);
+
+    userDao.add(user1);
+    assertThat(userDao.getCount()).isEqualTo(1);
+
+    userDao.add(user2);
+    assertThat(userDao.getCount()).isEqualTo(2);
+
+    userDao.add(user3);
+    assertThat(userDao.getCount()).isEqualTo(3);
+
+    userDao.getAll().forEach(user -> {
+      assertThat(user.getId()).isIn("id1", "id2", "id3");
+      assertThat(user.getName()).isIn("name1", "name2", "name3");
+      assertThat(user.getPassword()).isIn("password1", "password2", "password3");
+    });
+
+    assertThat(userDao.getAll().size()).isEqualTo(3);
+  }
 
 }

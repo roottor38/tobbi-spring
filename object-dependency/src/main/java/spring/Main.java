@@ -11,13 +11,13 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         DaoFactory daoFactory = new DaoFactory();
-        UserDao userDao = daoFactory.userDao();
-        User user = new User();
-        user.setId("id");
-        user.setName("name");
-        user.setPassword("password");
-
-        userDao.add(user);
+//        UserDao userDao = daoFactory.userDao();
+//        User user = new User();
+//        user.setId("id");
+//        user.setName("name");
+//        user.setPassword("password");
+//
+//        userDao.add(user);
 
 //        System.out.println(user.getId() + " 등록 성공");
     }

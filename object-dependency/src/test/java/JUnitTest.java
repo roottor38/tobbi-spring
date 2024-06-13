@@ -1,4 +1,3 @@
-import static net.bytebuddy.implementation.FixedValue.nullValue;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.HashSet;
