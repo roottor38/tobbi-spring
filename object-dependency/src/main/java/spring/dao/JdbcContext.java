@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
+@Setter
 public class JdbcContext {
     private DataSource dataSource;
 
@@ -17,7 +18,4 @@ public class JdbcContext {
         }
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 }
