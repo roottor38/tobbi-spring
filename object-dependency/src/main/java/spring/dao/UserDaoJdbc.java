@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import spring.domain.Level;
 import spring.object.dependency.User;
 
 @Setter
@@ -19,6 +20,9 @@ public class UserDaoJdbc implements UserDao {
         user.setId(rs.getString("id"));
         user.setName(rs.getString("name"));
         user.setPassword(rs.getString("password"));
+        user.setLevel(Level.valueOf(rs.getInt("LEVEL")));
+        user.setLogin(rs.getInt("LOGIN"));
+        user.setRecommend(rs.getInt("RECOMMEND"));
         return user;
     };
 
@@ -32,8 +36,19 @@ public class UserDaoJdbc implements UserDao {
 
     public void add(User user) {
         jdbcTemplate.update(
-            "INSERT INTO users (id, name, password) VALUES (?, ?, ?)",
-            user.getId(), user.getName(), user.getPassword()
+            "INSERT INTO users (id, name, password, LEVEL, LOGIN, RECOMMEND) VALUES (?, ?, ?, ?, ?, ?)",
+            user.getId(), user.getName(), user.getPassword(),
+            user.getLevel().intValue(), user.getLogin(), user.getRecommend()
+        );
+    }
+
+    public void update(User user) {
+        jdbcTemplate.update(
+            """
+                UPDATE users
+                SET name = ?, password = ?, LEVEL = ?, LOGIN = ?, RECOMMEND = ? WHERE id = ?
+                """,
+            user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId()
         );
     }
 
@@ -62,4 +77,6 @@ public class UserDaoJdbc implements UserDao {
     public int getCount() {
       return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class);
     }
+
+
 }
