@@ -11,12 +11,9 @@ public class UserService {
 
     private UserDao userDao;
 
-    public void upgradeLevels() {
-        userDao.getAll().forEach(user -> {
-            if (canUpgradeLevel(user)) {
-                upgradeLevel(user);
-            }
-        });
+    public void upgradeLevels(User user) {
+        user.upgradeLevel();
+        userDao.update(user);
     }
 
     public void add(User user) {
@@ -32,11 +29,6 @@ public class UserService {
             case SILVER -> user.getRecommend() >= 30;
             case GOLD -> false;
         };
-    }
-
-    private void upgradeLevel(User user) {
-        user.upgradeLevel();
-        userDao.update(user);
     }
 
 }

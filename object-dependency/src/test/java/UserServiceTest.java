@@ -41,16 +41,56 @@ public class UserServiceTest {
 
     @Test
     public void upgradeLevels() {
-        List<User> users = userDao.getAll();
-        userDao.deleteAll();
-        users.forEach(userDao::add);
+        Level[] levels = Level.values();
+        for (Level level : levels) {
+            if (level.nextLevel() == null) {
+                continue;
+            }
+            for (User user : users) {
+                user.setLevel(level);
+                user.upgradeLevel();
+                assertThat(user.getLevel()).isEqualTo(level.nextLevel());
+            }
+        }
+    }
 
-        userService.upgradeLevels();
-        assertThat(users.get(0).getLevel()).isEqualTo(Level.BASIC);
-        assertThat(users.get(1).getLevel()).isEqualTo(Level.SILVER);
-        assertThat(users.get(2).getLevel()).isEqualTo(Level.GOLD);
-        assertThat(users.get(3).getLevel()).isEqualTo(Level.SILVER);
-        assertThat(users.get(4).getLevel()).isEqualTo(Level.GOLD);
+    @Test
+    public void cannotUpgradeLevel() {
+        Level[] levels = Level.values();
+        User user = users.get(4);
+        for (Level level : levels) {
+            if (level.nextLevel() != null) {
+                continue;
+            }
+            user.setLevel(level);
+            assertThrows(IllegalStateException.class, user::upgradeLevel);
+        }
+    }
+
+    @Test
+    public void add() {
+        userDao.deleteAll();
+        User userWithLevel = users.get(4);
+        User userWithoutLevel = users.get(0);
+        userWithoutLevel.setLevel(null);
+
+        userService.add(userWithLevel);
+        userService.add(userWithoutLevel);
+
+        User userWithLevelRead = userDao.get(userWithLevel.getId());
+        User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
+
+        assertThat(userWithLevelRead.getLevel()).isEqualTo(userWithLevel.getLevel());
+        assertThat(userWithoutLevelRead.getLevel()).isEqualTo(Level.BASIC);
+    }
+
+    private void checkLevelUpgraded(User user, boolean upgraded) {
+        User userUpdate = userDao.get(user.getId());
+        if (upgraded) {
+            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().nextLevel());
+        } else {
+            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel());
+        }
     }
 
 
