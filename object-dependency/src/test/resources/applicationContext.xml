@@ -10,7 +10,8 @@
         <property name="password" value="book"/>
     </bean>
 
-    <bean id="userDao" class="spring.dao.UserDao">
+    <bean id="userDao" class="spring.dao.UserDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
         <property name="jdbcTemplate" ref="dataSource"/>
     </bean>
 

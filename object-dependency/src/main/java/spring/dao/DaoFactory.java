@@ -9,10 +9,21 @@ import javax.sql.DataSource;
 public class DaoFactory {
 
   @Bean
-  public UserDao userDao() {
-    UserDao userDao = new UserDao();
-    userDao.setJdbcTemplate(dataSource());
-    return userDao;
+  public UserDaoJdbc userDao() {
+    UserDaoJdbc userDaoJdbc = new UserDaoJdbc();
+    userDaoJdbc.setDataSource(dataSource2());
+    userDaoJdbc.setJdbcTemplate(dataSource());
+    return userDaoJdbc;
+  }
+
+  @Bean
+  public SimpleDriverDataSource dataSource2() {
+    SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+    dataSource.setDriverClass(com.mysql.cj.jdbc.Driver.class);
+    dataSource.setUrl("jdbc:mysql://localhost/springbook");
+    dataSource.setUsername("spring");
+    dataSource.setPassword("book");
+    return dataSource;
   }
 
   @Bean
