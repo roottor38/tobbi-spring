@@ -3,7 +3,7 @@ package spring.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import spring.object.dependency.User;
+import spring.user.User;
 
 public class AddStatement implements StatementStrategy {
 

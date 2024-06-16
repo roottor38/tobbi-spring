@@ -1,4 +1,4 @@
-package spring.exception;
+package spring.user.exception;
 
 public class DuplicationUserIdException extends RuntimeException {
 

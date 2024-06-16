@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import spring.domain.Level;
-import spring.object.dependency.User;
+import spring.user.User;
 
 @Setter
 public class UserDaoJdbc implements UserDao {
@@ -66,6 +66,9 @@ public class UserDaoJdbc implements UserDao {
             user.setId(rs.getString("id"));
             user.setName(rs.getString("name"));
             user.setPassword(rs.getString("password"));
+            user.setLevel(Level.valueOf(rs.getInt("LEVEL")));
+            user.setLogin(rs.getInt("LOGIN"));
+            user.setRecommend(rs.getInt("RECOMMEND"));
             return user;
         });
     }

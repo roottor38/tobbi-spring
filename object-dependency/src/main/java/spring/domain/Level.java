@@ -21,4 +21,12 @@ public enum Level {
             default -> throw new AssertionError("Unknown value: " + value);
         };
     }
+
+    public Level nextLevel() {
+        return switch (this) {
+            case BASIC -> SILVER;
+            case SILVER -> GOLD;
+            case GOLD -> null;
+        };
+    }
 }
