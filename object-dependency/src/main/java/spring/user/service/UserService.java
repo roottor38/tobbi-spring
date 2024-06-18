@@ -18,7 +18,7 @@ public class UserService {
     users.forEach(this::upgradeLevel);
   }
 
-  public void upgradeLevel(User user) {
+  protected void upgradeLevel(User user) {
     if (canUpgradeLevel(user)) {
       user.upgradeLevel();
       userDao.update(user);
@@ -39,5 +39,22 @@ public class UserService {
       case GOLD -> false;
     };
   }
+  public static class TestUserService extends UserService {
 
+    private String id;
+
+    public TestUserService(String id) {
+      this.id = id;
+    }
+
+    @Override
+    protected void upgradeLevel(User user) {
+      if (user.getId().equals(this.id)) {
+        throw new TestUserServiceException();
+      }
+      super.upgradeLevel(user);
+    }
+  }
+  public static class TestUserServiceException extends RuntimeException {
+  }
 }

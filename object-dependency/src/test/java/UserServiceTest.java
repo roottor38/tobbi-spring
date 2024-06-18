@@ -1,10 +1,9 @@
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +14,8 @@ import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;
 import spring.user.service.UserService;
+import spring.user.service.UserService.TestUserService;
+import spring.user.service.UserService.TestUserServiceException;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
@@ -33,8 +34,8 @@ public class UserServiceTest {
   public void setUp() {
     user = new User();
     this.users = List.of(
-        new User("id1", "name", "password", Level.BASIC, 49, 0),
-        new User("id2", "name", "password", Level.SILVER, 55, 10),
+        new User("id1", "name", "password", Level.BASIC, 50, 0),
+        new User("id2", "name", "password", Level.SILVER, 55, 30),
         new User("id3", "name", "password", Level.SILVER, 100, 40),
         new User("id4", "name", "password", Level.BASIC, 60, 0),
         new User("id5", "name", "password", Level.GOLD, 100, 100)
@@ -43,13 +44,23 @@ public class UserServiceTest {
   }
 
   @Test
-  public void upgradeLevel() {
-    Level[] levels = Level.values();
-    Arrays.stream(levels).forEach(level -> {
-      user.setLevel(level);
-      user.upgradeLevel();
-      assertThat(user.getLevel()).isEqualTo(level.nextLevel());
-    });
+  public void upgradeAllOrNoting() {
+    UserService testUserService = new TestUserService(users.get(3).getId());
+    testUserService.setUserDao(this.userDao);       // UserDao를 직접 DI해준다.
+    userDao.deleteAll();
+    users.forEach(userDao::add);
+
+    try {
+      // 작업 중에 예외가 발생해야 한다. 정상 종료라면 문제
+      testUserService.upgradeLevels();
+      //정상적 종료라면 fail() 때문에 실패 할 것이다.
+      fail("TestUserServiceException expected");
+
+    } catch (TestUserServiceException ignored) {
+      System.out.println("TestUserServiceException 발생");
+    }
+    // 예외가 발생하기 전에 정상적으로 작업을 마무리해야 한다.
+    checkLevelUpgraded(users.get(1), false);
   }
 
   @Test
