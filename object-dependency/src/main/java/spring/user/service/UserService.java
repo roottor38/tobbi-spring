@@ -1,7 +1,12 @@
 package spring.user.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
+import javax.sql.DataSource;
 import lombok.Setter;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;
@@ -10,12 +15,28 @@ import spring.user.User;
 public class UserService {
 
   private UserDao userDao;
+  private DataSource dataSource;
+
   private static final int MIN_LOGCOUNT_FOR_SILVER = 50;
   private static final int MIN_RECOMMEND_FOR_GOLD = 30;
 
-  public void upgradeLevels() {
-    List<User> users = userDao.getAll();
-    users.forEach(this::upgradeLevel);
+  public void upgradeLevels() throws SQLException {
+    TransactionSynchronizationManager.initSynchronization();
+    Connection c = DataSourceUtils.getConnection(dataSource);
+    c.setAutoCommit(false);
+    try {
+      List<User> users = userDao.getAll();
+      users.forEach(this::upgradeLevel);
+      c.commit();
+    } catch (SQLException e) {
+      c.rollback();
+      throw e;
+    } finally {
+      DataSourceUtils.releaseConnection(c, this.dataSource);
+      TransactionSynchronizationManager.unbindResource(this.dataSource);
+      TransactionSynchronizationManager.clearSynchronization();
+    }
+
   }
 
   protected void upgradeLevel(User user) {

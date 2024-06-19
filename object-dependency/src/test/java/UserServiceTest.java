@@ -1,9 +1,9 @@
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +25,9 @@ public class UserServiceTest {
   private UserService userService;
 
   @Autowired
+  private DataSource dataSource;
+
+  @Autowired
   private UserDao userDao;
 
   private User user;
@@ -44,15 +47,17 @@ public class UserServiceTest {
   }
 
   @Test
-  public void upgradeAllOrNoting() {
+  public void upgradeAllOrNoting() throws Exception {
     UserService testUserService = new TestUserService(users.get(3).getId());
-    testUserService.setUserDao(this.userDao);       // UserDao를 직접 DI해준다.
+    testUserService.setUserDao(this.userDao);       // UserDao 를 직접 DI 해준다.
+    testUserService.setDataSource(this.dataSource); // DataSource 를 직접 DI 해준다.
     userDao.deleteAll();
     users.forEach(userDao::add);
 
     try {
       // 작업 중에 예외가 발생해야 한다. 정상 종료라면 문제
       testUserService.upgradeLevels();
+      testUserService.setDataSource(this.dataSource);
       //정상적 종료라면 fail() 때문에 실패 할 것이다.
       fail("TestUserServiceException expected");
 
