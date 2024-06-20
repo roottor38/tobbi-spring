@@ -3,11 +3,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
-import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,7 +29,7 @@ public class UserServiceTest {
   private UserService userService;
 
   @Autowired
-  private DataSource dataSource;
+  private MailSender mailSender;
 
   @Autowired
   private UserDaoJdbc userDao;
@@ -41,11 +41,11 @@ public class UserServiceTest {
   public void setUp() {
     user = new User();
     this.users = List.of(
-        new User("id1", "name", "password", Level.BASIC, 50, 0),
-        new User("id2", "name", "password", Level.SILVER, 55, 30),
-        new User("id3", "name", "password", Level.SILVER, 100, 40),
-        new User("id4", "name", "password", Level.BASIC, 60, 0),
-        new User("id5", "name", "password", Level.GOLD, 100, 100)
+        new User("id1", "name", "password", Level.BASIC, 50, 0, "user@user.co.kr"),
+        new User("id2", "name", "password", Level.SILVER, 55, 30, "user@user.co.kr"),
+        new User("id3", "name", "password", Level.SILVER, 100, 40, "user@user.co.kr"),
+        new User("id4", "name", "password", Level.BASIC, 60, 0, "user@user.co.kr"),
+        new User("id5", "name", "password", Level.GOLD, 100, 100, "user@user.co.kr")
     );
 
   }
@@ -55,6 +55,7 @@ public class UserServiceTest {
     UserService testUserService = new TestUserService(users.get(3).getId());
     testUserService.setUserDao(this.userDao);       // UserDao 를 직접 DI 해준다.
     testUserService.setTransactionManager(this.transactionManager); // 트랜잭션 매니저를 직접 DI 해준다.
+    testUserService.setMailSender(this.mailSender); // 메일 발송 기능을 직접 DI 해준다.
 
     userDao.deleteAll();
     users.forEach(userDao::add);

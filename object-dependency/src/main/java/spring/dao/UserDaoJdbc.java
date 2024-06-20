@@ -24,14 +24,18 @@ public class UserDaoJdbc implements UserDao{
         user.setLevel(Level.valueOf(rs.getInt("LEVEL")));
         user.setLogin(rs.getInt("LOGIN"));
         user.setRecommend(rs.getInt("RECOMMEND"));
+        user.setEmail(rs.getString("email"));
         return user;
     };
 
     public void add(User user) {
         jdbcTemplate.update(
-            "INSERT INTO users (id, name, password, LEVEL, LOGIN, RECOMMEND) VALUES (?, ?, ?, ?, ?, ?)",
+            """
+                INSERT INTO users (id, name, password, LEVEL, LOGIN, RECOMMEND, email)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
             user.getId(), user.getName(), user.getPassword(),
-            user.getLevel().intValue(), user.getLogin(), user.getRecommend()
+            user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail()
         );
     }
 
@@ -39,9 +43,9 @@ public class UserDaoJdbc implements UserDao{
         jdbcTemplate.update(
             """
                 UPDATE users
-                SET name = ?, password = ?, LEVEL = ?, LOGIN = ?, RECOMMEND = ? WHERE id = ?
+                SET name = ?, password = ?, LEVEL = ?, LOGIN = ?, RECOMMEND = ?, email = ? WHERE id = ?
                 """,
-            user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId()
+            user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId()
         );
     }
 
@@ -55,14 +59,8 @@ public class UserDaoJdbc implements UserDao{
 
     public List<User> getAll() {
         return jdbcTemplate.query("SELECT * FROM users", (rs, rowNum) -> {
-            User user = new User();
-            user.setId(rs.getString("id"));
-            user.setName(rs.getString("name"));
-            user.setPassword(rs.getString("password"));
-            user.setLevel(Level.valueOf(rs.getInt("LEVEL")));
-            user.setLogin(rs.getInt("LOGIN"));
-            user.setRecommend(rs.getInt("RECOMMEND"));
-            return user;
+          userMapper.mapRow(rs, rowNum);
+            return userMapper.mapRow(rs, rowNum);
         });
     }
 
