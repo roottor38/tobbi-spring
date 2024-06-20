@@ -4,8 +4,12 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="userService" class="spring.user.service.UserService">
-    <property name="dataSource" ref="dataSource"/>
     <property name="userDao" ref="userDao"/>
+    <property name="transactionManager" ref="transactionManager"/>
+  </bean>
+
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"/>
   </bean>
   <bean id="userDao" class="spring.dao.UserDao">
     <property name="dataSource" ref="dataSource"/>

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.PlatformTransactionManager;
 import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;
@@ -20,6 +21,9 @@ import spring.user.service.UserService.TestUserServiceException;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
 public class UserServiceTest {
+
+  @Autowired
+  PlatformTransactionManager transactionManager;
 
   @Autowired
   private UserService userService;
@@ -50,14 +54,14 @@ public class UserServiceTest {
   public void upgradeAllOrNoting() throws Exception {
     UserService testUserService = new TestUserService(users.get(3).getId());
     testUserService.setUserDao(this.userDao);       // UserDao 를 직접 DI 해준다.
-    testUserService.setDataSource(this.dataSource); // DataSource 를 직접 DI 해준다.
+    testUserService.setTransactionManager(this.transactionManager); // 트랜잭션 매니저를 직접 DI 해준다.
+
     userDao.deleteAll();
     users.forEach(userDao::add);
 
     try {
       // 작업 중에 예외가 발생해야 한다. 정상 종료라면 문제
       testUserService.upgradeLevels();
-      testUserService.setDataSource(this.dataSource);
       //정상적 종료라면 fail() 때문에 실패 할 것이다.
       fail("TestUserServiceException expected");
 
