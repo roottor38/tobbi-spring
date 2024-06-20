@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
-import spring.dao.UserDao;
+import spring.dao.UserDaoJdbc;
 import spring.domain.Level;
 import spring.user.User;
 import spring.user.service.UserService;
@@ -32,7 +32,7 @@ public class UserServiceTest {
   private DataSource dataSource;
 
   @Autowired
-  private UserDao userDao;
+  private UserDaoJdbc userDao;
 
   private User user;
   private List<User> users;
