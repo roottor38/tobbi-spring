@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="userService" class="spring.user.service.UserService">
+  <bean id="userService" class="spring.user.service.UserServiceImpl">
     <property name="userDao" ref="userDao"/>
     <property name="transactionManager" ref="transactionManager"/>
   </bean>

@@ -3,9 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="userService" class="spring.user.service.UserService">
-    <property name="userDao" ref="userDao"/>
+  <bean id="userService" class="spring.user.service.UserServiceTx">
     <property name="transactionManager" ref="transactionManager"/>
+    <property name="userService" ref="userServiceImpl"/>
+  </bean>
+
+  <bean id="userServiceImpl" class="spring.user.service.UserServiceImpl">
+    <property name="userDao" ref="userDao"/>
     <property name="mailSender" ref="mailSender"/>
   </bean>
 
@@ -15,9 +19,11 @@
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
     <property name="dataSource" ref="dataSource"/>
   </bean>
+
   <bean id="userDao" class="spring.dao.UserDaoJdbc">
     <property name="dataSource" ref="dataSource"/>
   </bean>
+
   <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
     <property name="driverClass" value="com.mysql.jdbc.Driver"/>
     <property name="url" value="jdbc:mysql://localhost:3306/springbook"/>
