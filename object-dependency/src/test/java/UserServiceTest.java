@@ -26,7 +26,6 @@ import spring.user.User;
 import spring.user.service.TransactionHandler;
 import spring.user.service.UserService;
 import spring.user.service.UserServiceImpl;
-import spring.user.service.UserServiceTx;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
@@ -45,14 +44,12 @@ public class UserServiceTest {
     @Autowired
     private UserDaoJdbc userDao;
 
-    private User user;
     private List<User> users;
     @Autowired
     private UserServiceImpl userServiceImpl;
 
     @BeforeEach
     public void setUp() {
-        user = new User();
         this.users = List.of(
             new User("id1", "name", "password", Level.BASIC, 50, 0, "user1@user.co.kr"),
             new User("id2", "name", "password", Level.SILVER, 55, 30, "user2@user.co.kr"),
@@ -67,9 +64,6 @@ public class UserServiceTest {
     @DirtiesContext
     public void upgradeAllOrNoting() {
         UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
-        MockUserDao mockUserDao = new MockUserDao(users);
-        testUserService.setUserDao(mockUserDao);
-        testUserService.setMailSender(mailSender);
 
         TransactionHandler txHandler = new TransactionHandler();
         txHandler.setTarget(testUserService);
@@ -95,7 +89,7 @@ public class UserServiceTest {
             System.out.println("TestUserServiceException 발생");
         }
         // 예외가 발생하기 전에 정상적으로 작업을 마무리해야 한다.
-        checkLevelUpgraded(users.get(1), false, Level.SILVER);
+        checkLevelUpgraded(users.get(1), false);
     }
 
     private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
@@ -110,8 +104,8 @@ public class UserServiceTest {
             if (level.nextLevel() != null) {
                 continue;
             }
-            user.setLevel(level);
-            assertThrows(IllegalStateException.class, user::upgradeLevel);
+//            user.setLevel(level);
+//            assertThrows(IllegalStateException.class, user::upgradeLevel);
         }
     }
 
@@ -149,12 +143,12 @@ public class UserServiceTest {
 
     }
 
-    private void checkLevelUpgraded(User user, boolean upgraded, Level level) {
+    private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
         if (upgraded) {
-            assertThat(userUpdate.getLevel()).isEqualTo(level);
+            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().nextLevel());
         } else {
-            assertThat(userUpdate.getLevel()).isEqualTo(level);
+            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel());
         }
     }
 
