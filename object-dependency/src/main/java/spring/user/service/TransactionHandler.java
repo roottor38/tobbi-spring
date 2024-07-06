@@ -15,7 +15,7 @@ public class TransactionHandler implements InvocationHandler {
     private String pattern;
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
         if (method.getName().startsWith(pattern)) {
             return invokeInTransaction(method, args);
         } else {
@@ -23,13 +23,13 @@ public class TransactionHandler implements InvocationHandler {
         }
     }
 
-    private Object invokeInTransaction(Method method, Object[] args) throws Throwable {
+    private Object invokeInTransaction(Method method, Object[] args) throws Exception {
         TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
             Object ret = method.invoke(target, args);
             transactionManager.commit(status);
             return ret;
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             transactionManager.rollback(status);
             throw e;
         }

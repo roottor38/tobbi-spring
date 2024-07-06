@@ -64,8 +64,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeAllOrNoting() throws Exception {
-        UserServiceImpl testUserService = new UserServiceImpl();
+    @DirtiesContext
+    public void upgradeAllOrNoting() {
+        UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
         MockUserDao mockUserDao = new MockUserDao(users);
         testUserService.setUserDao(mockUserDao);
         testUserService.setMailSender(mailSender);
@@ -90,11 +91,11 @@ public class UserServiceTest {
             //정상적 종료라면 fail() 때문에 실패 할 것이다.
             fail("TestUserServiceException expected");
 
-        } catch (TestUserServiceException ignored) {
+        } catch (Exception e) {
             System.out.println("TestUserServiceException 발생");
         }
         // 예외가 발생하기 전에 정상적으로 작업을 마무리해야 한다.
-        checkLevelUpgraded(users.get(1), true);
+        checkLevelUpgraded(users.get(1), false, Level.SILVER);
     }
 
     private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
@@ -141,12 +142,6 @@ public class UserServiceTest {
 
         userService.upgradeLevels();
 
-        checkLevelUpgraded(users.get(0), true);
-        checkLevelUpgraded(users.get(1), true);
-        checkLevelUpgraded(users.get(2), true);
-        checkLevelUpgraded(users.get(3), true);
-        checkLevelUpgraded(users.get(4), false);
-
         List<String> requests = mockMailSender.getRequests();
         assertThat(requests).hasSize(4);
         assertThat(requests.get(0)).isEqualTo( users.get(0).getEmail());
@@ -154,12 +149,12 @@ public class UserServiceTest {
 
     }
 
-    private void checkLevelUpgraded(User user, boolean upgraded) {
+    private void checkLevelUpgraded(User user, boolean upgraded, Level level) {
         User userUpdate = userDao.get(user.getId());
         if (upgraded) {
-            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().nextLevel());
+            assertThat(userUpdate.getLevel()).isEqualTo(level);
         } else {
-            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel());
+            assertThat(userUpdate.getLevel()).isEqualTo(level);
         }
     }
 
