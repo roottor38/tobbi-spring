@@ -2,7 +2,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +24,6 @@ import spring.dao.UserDao;
 import spring.dao.UserDaoJdbc;
 import spring.domain.Level;
 import spring.user.User;
-import spring.user.service.TransactionHandler;
-import spring.user.service.TxProxyFactoryBean;
 import spring.user.service.UserService;
 import spring.user.service.UserServiceImpl;
 

@@ -3,11 +3,49 @@ package proxy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
 
 public class DynamicProxyTest {
+
+  @Test
+  public void classNamePointcutAdvisor() {
+    NameMatchMethodPointcut classMethodPointcut = new NameMatchMethodPointcut() {
+      @Override
+      public ClassFilter getClassFilter() {
+        return clazz -> clazz.getSimpleName().startsWith("HelloT");
+      }
+    };
+    classMethodPointcut.setMappedName("sayH*");
+
+    checkAdviced(new HelloTarget(), classMethodPointcut, true);
+
+    class HelloWorld extends HelloTarget {};
+    checkAdviced(new HelloWorld(), classMethodPointcut, false);
+
+    class HelloToby extends HelloTarget {};
+    checkAdviced(new HelloToby(), classMethodPointcut, true);
+  }
+
+  private void checkAdviced(Object target, NameMatchMethodPointcut pointcut, boolean adviced) {
+    ProxyFactoryBean pfBean = new ProxyFactoryBean();
+    pfBean.setTarget(target);
+    pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+    Hello proxiedHello = (Hello) pfBean.getObject();
+
+    if (adviced) {
+      assertThat(proxiedHello.sayHello("Toby")).isEqualTo("HELLO TOBY");
+      assertThat(proxiedHello.sayHi("Toby")).isEqualTo("HI TOBY");
+      assertThat(proxiedHello.sayThankYou("Toby")).isEqualTo("Thank You Toby");
+    } else {
+      assertThat(proxiedHello.sayHello("Toby")).isEqualTo("Hello Toby");
+      assertThat(proxiedHello.sayHi("Toby")).isEqualTo("Hi Toby");
+      assertThat(proxiedHello.sayThankYou("Toby")).isEqualTo("Thank You Toby");
+    }
+  }
+
   @Test
   public void simpleProxy() {
     Hello hello = new HelloTarget();
