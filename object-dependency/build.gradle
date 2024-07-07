@@ -23,6 +23,8 @@ dependencies {
     implementation 'com.sun.mail:javax.mail:1.6.2'
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.springframework:spring-context-support:5.3.10'
+//    implementation 'org.aopalliance:aopalliance:1.0'
+    implementation 'org.springframework:spring-aop:6.0.21'
 }
 
 test {

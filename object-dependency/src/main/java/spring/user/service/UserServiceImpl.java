@@ -2,8 +2,13 @@ package spring.user.service;
 
 import java.util.List;
 import lombok.Setter;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;

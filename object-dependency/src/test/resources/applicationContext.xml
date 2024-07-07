@@ -3,9 +3,26 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="userService" class="spring.user.service.UserServiceTx">
+  <bean id="transactionAdvice" class="spring.user.service.TransactionAdvice">
     <property name="transactionManager" ref="transactionManager"/>
-    <property name="userService" ref="userServiceImpl"/>
+  </bean>
+
+  <bean id="transactionPointCut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+    <property name="mappedName" value="upgrade*"/>
+  </bean>
+
+  <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+    <property name="pointcut" ref="transactionPointCut"/>
+    <property name="advice" ref="transactionAdvice"/>
+  </bean>
+
+  <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="target" ref="userServiceImpl"/>
+    <property name="interceptorNames">
+      <list>
+        <value>transactionAdvisor</value>
+      </list>
+    </property>
   </bean>
 
   <bean id="userServiceImpl" class="spring.user.service.UserServiceImpl">
