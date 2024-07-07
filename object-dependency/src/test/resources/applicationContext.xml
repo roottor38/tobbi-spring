@@ -3,12 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+  <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+  <bean id ="testUserService" class="spring.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>
+
   <bean id="transactionAdvice" class="spring.user.service.TransactionAdvice">
     <property name="transactionManager" ref="transactionManager"/>
   </bean>
 
-  <bean id="transactionPointCut" class="org.springframework.aop.support.NameMatchMethodPointcut">
-    <property name="mappedName" value="upgrade*"/>
+  <bean id="transactionPointCut" class="spring.user.service.NameMatchClassMethodPointcut">
+    <property name="mappedClassName" value="*ServiceImpl"/> <!-- 클래스 이름이 ServiceImpl로 끝나는 클래스의 모든 메소드 -->
+    <property name="mappedName" value="upgrade*"/>          <!-- 메소드 이름이 upgrade로 시작하는 메소드 -->
   </bean>
 
   <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
@@ -16,13 +21,9 @@
     <property name="advice" ref="transactionAdvice"/>
   </bean>
 
-  <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
-    <property name="target" ref="userServiceImpl"/>
-    <property name="interceptorNames">
-      <list>
-        <value>transactionAdvisor</value>
-      </list>
-    </property>
+  <bean id="userService" class="spring.user.service.UserServiceImpl">
+    <property name="userDao" ref="userDao"/>
+    <property name="mailSender" ref="mailSender"/>
   </bean>
 
   <bean id="userServiceImpl" class="spring.user.service.UserServiceImpl">

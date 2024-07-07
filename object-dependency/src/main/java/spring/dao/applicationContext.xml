@@ -3,19 +3,45 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+  <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+  <bean id="transactionAdvice" class="spring.user.service.TransactionAdvice">
+    <property name="transactionManager" ref="transactionManager"/>
+  </bean>
+
+  <bean id="transactionPointCut" class="spring.user.service.NameMatchClassMethodPointcut">
+    <property name="mappedClassName" value="*ServiceImpl"/> <!-- 클래스 이름이 ServiceImpl로 끝나는 클래스의 모든 메소드 -->
+    <property name="mappedName" value="upgrade*"/>          <!-- 메소드 이름이 upgrade로 시작하는 메소드 -->
+  </bean>
+
+  <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+    <property name="pointcut" ref="transactionPointCut"/>
+    <property name="advice" ref="transactionAdvice"/>
+  </bean>
+
   <bean id="userService" class="spring.user.service.UserServiceImpl">
     <property name="userDao" ref="userDao"/>
-    <property name="transactionManager" ref="transactionManager"/>
+    <property name="mailSender" ref="mailSender"/>
+  </bean>
+
+  <bean id="userServiceImpl" class="spring.user.service.UserServiceImpl">
+    <property name="userDao" ref="userDao"/>
+    <property name="mailSender" ref="mailSender"/>
+  </bean>
+
+  <bean id="mailSender" class="spring.user.service.DummyMailSender">
   </bean>
 
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
     <property name="dataSource" ref="dataSource"/>
   </bean>
+
   <bean id="userDao" class="spring.dao.UserDaoJdbc">
     <property name="dataSource" ref="dataSource"/>
   </bean>
+
   <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-    <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+    <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
     <property name="url" value="jdbc:mysql://localhost:3306/springbook"/>
     <property name="username" value="spring"/>
     <property name="password" value="book"/>
