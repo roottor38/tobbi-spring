@@ -2,17 +2,25 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                       http://www.springframework.org/schema/aop
-                      http://www.springframework.org/schema/aop/spring-aop.xsd">
+                      http://www.springframework.org/schema/aop/spring-aop.xsd
+                      http://www.springframework.org/schema/tx
+                      http://www.springframework.org/schema/tx/spring-tx.xsd
+">
+
+  <tx:advice id="transactionAdvice">
+    <tx:attributes>
+      <tx:method name="upgrade*" read-only="true" timeout="30"/>
+      <tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE"/>
+      <tx:method name="*"/>
+    </tx:attributes>
+  </tx:advice>
 
   <aop:config>
     <aop:advisor advice-ref="transactionAdvice" pointcut="execution(* *..*ServiceImpl.upgrade*(..))"/>
   </aop:config>
-
-  <bean id="transactionAdvice" class="spring.user.service.TransactionAdvice">
-    <property name="transactionManager" ref="transactionManager"/>
-  </bean>
 
   <bean id="userService" class="spring.user.service.UserServiceImpl">
     <property name="userDao" ref="userDao"/>
