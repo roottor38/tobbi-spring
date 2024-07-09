@@ -1,5 +1,6 @@
 package spring.user.service;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import spring.user.User;
 
@@ -14,6 +15,14 @@ public class UserServiceTest {
         throw new TestUserServiceException();
       }
       super.upgradeLevel(user);
+    }
+
+    @Override
+    public List<User> getAll() {
+      for (User user : super.getAll()) {
+        super.update(user);
+      }
+      return null;
     }
   }
 

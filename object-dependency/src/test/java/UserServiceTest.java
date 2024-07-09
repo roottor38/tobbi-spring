@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -63,6 +64,11 @@ public class UserServiceTest {
         new User("id5", "name", "password", Level.GOLD, 100, 100, "user5@user.co.kr")
     );
 
+  }
+
+  @Test()
+  public void readOnlyTransactionAttribute() {
+    assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());
   }
 
   @Test
@@ -151,65 +157,5 @@ public class UserServiceTest {
     public void send(SimpleMailMessage... simpleMessages) throws MailException {
     }
   }
-
-//  static class MockUserDao implements UserDao {
-//
-//    private final List<User> users;
-//    private final List<User> updated = new ArrayList<>();
-//
-//    private MockUserDao(List<User> users) {
-//      this.users = users;
-//    }
-//
-//    public List<User> getUpdated() {
-//      return updated;
-//    }
-//
-//    @Override
-//    public void add(User user) {
-//      throw new UnsupportedOperationException();
-//    }
-//
-//    @Override
-//    public void update(User user) {
-//      updated.add(user);
-//    }
-//
-//    @Override
-//    public User get(String id) {
-//      return null;
-//    }
-//
-//
-//    @Override
-//    public List<User> getAll() {
-//      return users;
-//    }
-//
-//    @Override
-//    public void deleteAll() {
-//      throw new UnsupportedOperationException();
-//    }
-//
-//    @Override
-//    public int getCount() {
-//      throw new UnsupportedOperationException();
-//    }
-//  }
-
-//  static class TestUserServiceImpl extends UserServiceImpl {
-//
-//    @Override
-//    protected void upgradeLevel(User user) {
-//      String id = "id4";
-//      if (user.getId().equals(id)) {
-//        throw new TestUserServiceException();
-//      }
-//      super.upgradeLevel(user);
-//    }
-//  }
-//
-//  public static class TestUserServiceException extends RuntimeException {}
-
 
 }
