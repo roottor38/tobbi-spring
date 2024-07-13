@@ -20,6 +20,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import spring.dao.UserDaoJdbc;
 import spring.domain.Level;
 import spring.user.User;
@@ -68,9 +70,14 @@ public class UserServiceTest {
 
   @Test
   public void transactionSync() {
+
+    DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+    TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
     userService.deleteAll();
     userService.add(users.get(0));
     userService.add(users.get(1));
+    transactionManager.commit(txStatus);
   }
 
   @Test()
