@@ -1,7 +1,6 @@
 package spring.user.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import spring.user.User;
 
 public class UserServiceTest {
