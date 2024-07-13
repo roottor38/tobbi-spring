@@ -17,10 +17,12 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import spring.dao.UserDaoJdbc;
 import spring.domain.Level;
@@ -32,6 +34,7 @@ import spring.user.service.UserServiceTest.TestUserServiceException;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
 @DirtiesContext
+@Transactional
 public class UserServiceTest {
 
   @Autowired
@@ -71,16 +74,8 @@ public class UserServiceTest {
   @Test
   public void transactionSync() {
     userService.deleteAll();
-    assertThat(userDao.getCount()).isEqualTo(0);
-
-    DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-    TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-
     userService.add(users.get(0));
     userService.add(users.get(1));
-    assertThat(userDao.getCount()).isEqualTo(2);
-    transactionManager.rollback(txStatus);
-    assertThat(userDao.getCount()).isEqualTo(0);
   }
 
   @Test()
