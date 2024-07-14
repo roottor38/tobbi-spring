@@ -1,7 +1,6 @@
 package spring.dao;
 
 import java.util.List;
-import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,11 +11,9 @@ import spring.user.User;
 public class UserDaoJdbc implements UserDao{
 
   private JdbcTemplate jdbcTemplate;
-  private Map<String, String> sqlMap;
-
-
-  public void setSqlMap(Map<String, String> sqlMap) {
-    this.sqlMap = sqlMap;
+  private SqlService sqlService;
+  public void setSqlService(SqlService sqlService) {
+    this.sqlService = sqlService;
   }
 
   public void setDataSource(DataSource dataSource) {
@@ -36,43 +33,39 @@ public class UserDaoJdbc implements UserDao{
     };
 
     public void add(User user) {
-        jdbcTemplate.update(sqlMap.get("add") ,
+        jdbcTemplate.update(sqlService.getSql("userAdd") ,
             user.getId(), user.getName(), user.getPassword(),
             user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail()
         );
     }
 
     public void update(User user) {
-        jdbcTemplate.update(
-            """
-                UPDATE users
-                SET name = ?, password = ?, LEVEL = ?, LOGIN = ?, RECOMMEND = ?, email = ? WHERE id = ?
-                """,
+        jdbcTemplate.update(sqlService.getSql("userUpdate"),
             user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId()
         );
     }
 
     public User get(String id) {
         return jdbcTemplate.queryForObject(
-            "SELECT * FROM users WHERE id = ?"
+            sqlService.getSql("userGet")
             , new Object[] {id}
             , userMapper
         );
     }
 
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users", (rs, rowNum) -> {
+        return jdbcTemplate.query(sqlService.getSql("getAll"), (rs, rowNum) -> {
           userMapper.mapRow(rs, rowNum);
             return userMapper.mapRow(rs, rowNum);
         });
     }
 
     public void deleteAll() {
-      jdbcTemplate.update("DELETE FROM users");
+      jdbcTemplate.update(sqlService.getSql("userDeleteAll"));
     }
 
     public int getCount() {
-      return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class);
+      return jdbcTemplate.queryForObject(sqlService.getSql("getCount"), Integer.class);
     }
 
   public void setJdbcTemplate(SimpleDriverDataSource jdbcTemplate) {
