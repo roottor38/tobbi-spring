@@ -1,6 +1,7 @@
 package spring.dao;
 
 import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,6 +12,12 @@ import spring.user.User;
 public class UserDaoJdbc implements UserDao{
 
   private JdbcTemplate jdbcTemplate;
+  private Map<String, String> sqlMap;
+
+
+  public void setSqlMap(Map<String, String> sqlMap) {
+    this.sqlMap = sqlMap;
+  }
 
   public void setDataSource(DataSource dataSource) {
       this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -29,11 +36,7 @@ public class UserDaoJdbc implements UserDao{
     };
 
     public void add(User user) {
-        jdbcTemplate.update(
-            """
-                INSERT INTO users (id, name, password, LEVEL, LOGIN, RECOMMEND, email)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+        jdbcTemplate.update(sqlMap.get("add") ,
             user.getId(), user.getName(), user.getPassword(),
             user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail()
         );
@@ -74,4 +77,5 @@ public class UserDaoJdbc implements UserDao{
 
   public void setJdbcTemplate(SimpleDriverDataSource jdbcTemplate) {
   }
+
 }
