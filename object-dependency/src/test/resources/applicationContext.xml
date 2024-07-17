@@ -9,23 +9,6 @@
                       http://www.springframework.org/schema/tx
                       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 ">
-<!--  <tx:advice id="txAdvice">-->
-<!--    <tx:attributes>-->
-<!--      <tx:method name="get*" read-only="true"/>-->
-<!--      <tx:method name="*"/>-->
-<!--    </tx:attributes>-->
-<!--  </tx:advice>-->
-
-<!--  <tx:advice id="transactionAdvice">-->
-<!--    <tx:attributes>-->
-<!--      <tx:method name="get*" read-only="true"/>-->
-<!--      <tx:method name="*"/>-->
-<!--    </tx:attributes>-->
-<!--  </tx:advice>-->
-
-<!--  <aop:config>-->
-<!--    <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>-->
-<!--  </aop:config>-->
   <tx:annotation-driven/>
 
   <bean id="userService" class="spring.user.service.UserServiceImpl">
@@ -51,14 +34,20 @@
 
   <bean id="userDao" class="spring.dao.UserDaoJdbc">
     <property name="dataSource" ref="dataSource"/>
+    <property name="sqlService" ref="sqlService"/>
+  </bean>
+
+  <bean id="sqlService" class="spring.user.sqlservice.SimpleSqlService">
     <property name="sqlMap">
       <map>
-        <entry key="add" value="insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)"/>
-        <entry key="get" value="select * from users where id = ?"/>
+        <entry key="userAdd"
+          value="insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)"/>
+        <entry key="userGet" value="select * from users where id = ?"/>
         <entry key="deleteAll" value="delete from users"/>
         <entry key="getCount" value="select count(*) from users"/>
         <entry key="getAll" value="select * from users order by id"/>
-        <entry key="update" value="update users set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?"/>
+        <entry key="userUpdate"
+          value="update users set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?"/>
       </map>
     </property>
   </bean>

@@ -4,11 +4,13 @@ import java.util.List;
 import lombok.Setter;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.transaction.annotation.Transactional;
 import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;
 
 @Setter
+@Transactional
 public class UserServiceImpl implements UserService{
 
   private UserDao userDao;
