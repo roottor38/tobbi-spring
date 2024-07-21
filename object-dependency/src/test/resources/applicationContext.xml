@@ -43,6 +43,8 @@
 
   <bean id="sqlService" class="spring.user.sqlservice.XmlSqlService">
     <property name="sqlmapFile" value="sqlmap.xml"/>
+    <property name="sqlReader" ref="sqlService"/>
+    <property name="sqlRegistry" ref="sqlService"/>
   </bean>
 
   <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
