@@ -1,6 +1,5 @@
 package spring.user.sqlservice;
 
-
 public class DefaultSqlService extends BaseSqlService {
 
     public DefaultSqlService() {

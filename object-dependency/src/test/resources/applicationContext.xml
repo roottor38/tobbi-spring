@@ -15,6 +15,10 @@
   <tx:annotation-driven/>
   <context:annotation-config/>
 
+  <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <property name="contextPath" value="spring.user.sqlservice.jxb"/>
+  </bean>
+
   <bean id="userService" class="spring.user.service.UserServiceImpl">
     <property name="userDao" ref="userDao"/>
     <property name="mailSender" ref="mailSender"/>

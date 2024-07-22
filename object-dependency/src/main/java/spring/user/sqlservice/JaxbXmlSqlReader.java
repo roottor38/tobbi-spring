@@ -4,7 +4,6 @@ import java.io.InputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import lombok.Setter;
-import spring.dao.SqlService;
 import spring.user.sqlservice.jxb.SqlType;
 import spring.user.sqlservice.jxb.Sqlmap;
 
