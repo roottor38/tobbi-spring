@@ -47,7 +47,7 @@ public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
     }
 
     public void read(SqlRegistry sqlRegistry) {
-        String contextPath = SqlService.class.getPackage().getName();
+        String contextPath = Sqlmap.class.getPackage().getName();
         try {
             JAXBContext context = JAXBContext.newInstance(contextPath);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -68,7 +68,7 @@ public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
         try {
             return this.sqlRegistry.findSql(id);
         } catch (SqlNotFoundException e) {
-            throw new SqlRetrievalFailureException(e.getMessage());
+            throw new SqlRetrievalFailureException(e);
         }
     }
 

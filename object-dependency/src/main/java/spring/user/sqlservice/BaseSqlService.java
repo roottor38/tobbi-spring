@@ -2,9 +2,10 @@ package spring.user.sqlservice;
 
 import javax.annotation.PostConstruct;
 import lombok.Setter;
+import spring.dao.SqlService;
 
 @Setter
-public class BaseSqlService {
+public class BaseSqlService implements SqlService {
     protected SqlReader sqlReader;
     protected SqlRegistry sqlRegistry;
 

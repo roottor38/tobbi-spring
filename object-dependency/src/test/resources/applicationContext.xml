@@ -41,11 +41,17 @@
     <property name="sqlService" ref="sqlService"/>
   </bean>
 
-  <bean id="sqlService" class="spring.user.sqlservice.XmlSqlService">
-    <property name="sqlmapFile" value="sqlmap.xml"/>
-    <property name="sqlReader" ref="sqlService"/>
-    <property name="sqlRegistry" ref="sqlService"/>
+  <bean id="sqlService" class="spring.user.sqlservice.BaseSqlService">
+<!--    <property name="sqlmapFile" value="sqlmap.xml"/>-->
+    <property name="sqlReader" ref="sqlReader"/>
+    <property name="sqlRegistry" ref="sqlRegistry"/>
   </bean>
+
+  <bean id="sqlReader" class="spring.user.sqlservice.JaxbXmlSqlReader">
+    <property name="sqlmapFile" value="/sqlmap.xml"/>
+  </bean>
+
+  <bean id="sqlRegistry" class="spring.user.sqlservice.HashMapSqlRegistry"/>
 
   <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
     <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
@@ -53,6 +59,7 @@
     <property name="username" value="spring"/>
     <property name="password" value="book"/>
   </bean>
+
 
 
 </beans>
