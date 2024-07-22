@@ -41,15 +41,14 @@
     <property name="sqlService" ref="sqlService"/>
   </bean>
 
-  <bean id="sqlService" class="spring.user.sqlservice.BaseSqlService">
+  <bean id="sqlService" class="spring.user.sqlservice.DefaultSqlService">
+  </bean>
 <!--    <property name="sqlmapFile" value="sqlmap.xml"/>-->
-    <property name="sqlReader" ref="sqlReader"/>
-    <property name="sqlRegistry" ref="sqlRegistry"/>
-  </bean>
+<!--    <property name="sqlReader" ref="sqlReader"/>-->
+<!--    <property name="sqlRegistry" ref="sqlRegistry"/>-->
 
-  <bean id="sqlReader" class="spring.user.sqlservice.JaxbXmlSqlReader">
-    <property name="sqlmapFile" value="/sqlmap.xml"/>
-  </bean>
+
+  <bean id="sqlReader" class="spring.user.sqlservice.JaxbXmlSqlReader" />
 
   <bean id="sqlRegistry" class="spring.user.sqlservice.HashMapSqlRegistry"/>
 
