@@ -1,7 +1,7 @@
 package spring.user.sqlservice;
 
 public interface SqlRegistry {
-    void registerSql(String key, String sql);
+    void registrySql(String key, String sql);
     String findSql(String key) throws SqlNotFoundException;
 
 }

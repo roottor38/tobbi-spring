@@ -15,10 +15,6 @@
   <tx:annotation-driven/>
   <context:annotation-config/>
 
-  <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-    <property name="contextPath" value="spring.user.sqlservice.jxb"/>
-  </bean>
-
   <bean id="userService" class="spring.user.service.UserServiceImpl">
     <property name="userDao" ref="userDao"/>
     <property name="mailSender" ref="mailSender"/>
@@ -45,11 +41,12 @@
     <property name="sqlService" ref="sqlService"/>
   </bean>
 
-  <bean id="sqlService" class="spring.user.sqlservice.DefaultSqlService">
+  <bean id="sqlService" class="spring.user.sqlservice.OxmSqlService">
+    <property name="unmarshaller" ref="unmarshaller"/>
   </bean>
-<!--    <property name="sqlmapFile" value="sqlmap.xml"/>-->
-<!--    <property name="sqlReader" ref="sqlReader"/>-->
-<!--    <property name="sqlRegistry" ref="sqlRegistry"/>-->
+  <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <property name="contextPath" value="spring.user.sqlservice.jxb"/>
+  </bean>
 
 
   <bean id="sqlReader" class="spring.user.sqlservice.JaxbXmlSqlReader" />

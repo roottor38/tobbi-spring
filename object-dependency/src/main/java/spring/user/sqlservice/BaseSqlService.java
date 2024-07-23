@@ -10,7 +10,7 @@ public class BaseSqlService implements SqlService {
     protected SqlRegistry sqlRegistry;
 
     @PostConstruct
-    private void loadSql() {
+    public void loadSql() {
         this.sqlReader.read(this.sqlRegistry);
     }
 

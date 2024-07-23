@@ -16,7 +16,7 @@ public class HashMapSqlRegistry implements SqlRegistry{
         }
     }
 
-    public void registerSql(String key, String sql) {
+    public void registrySql(String key, String sql) {
         sqlMap.put(key, sql);
     }
 
