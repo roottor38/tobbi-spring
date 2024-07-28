@@ -2,6 +2,7 @@ package spring.user.sqlservice;
 
 import java.util.HashMap;
 import java.util.Map;
+import spring.user.exception.SqlNotFoundException;
 
 public class HashMapSqlRegistry implements SqlRegistry{
 

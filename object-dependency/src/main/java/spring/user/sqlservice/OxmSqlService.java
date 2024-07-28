@@ -10,6 +10,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 import spring.dao.SqlService;
 import spring.dao.UserDao;
+import spring.user.exception.SqlNotFoundException;
+import spring.user.exception.SqlRetrievalFailureException;
 import spring.user.sqlservice.jxb.SqlType;
 import spring.user.sqlservice.jxb.Sqlmap;
 

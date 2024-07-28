@@ -2,6 +2,7 @@ package spring.user.sqlservice;
 
 import java.util.Map;
 import spring.dao.SqlService;
+import spring.user.exception.SqlRetrievalFailureException;
 
 public class SimpleSqlService implements SqlService {
 

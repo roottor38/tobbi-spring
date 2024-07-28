@@ -3,6 +3,8 @@ package spring.user.sqlservice;
 import javax.annotation.PostConstruct;
 import lombok.Setter;
 import spring.dao.SqlService;
+import spring.user.exception.SqlNotFoundException;
+import spring.user.exception.SqlRetrievalFailureException;
 
 @Setter
 public class BaseSqlService implements SqlService {
