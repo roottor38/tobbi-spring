@@ -18,7 +18,6 @@
 
   <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
     <jdbc:script location="classpath:schema.sql"/>
-    <jdbc:script location="classpath:data.sql"/>
   </jdbc:embedded-database>
 
   <bean id="userService" class="spring.user.service.UserServiceImpl">
@@ -59,7 +58,9 @@
 
   <bean id="sqlReader" class="spring.user.sqlservice.JaxbXmlSqlReader" />
 
-  <bean id="sqlRegistry" class="spring.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry"/>
+  <bean id="sqlRegistry" class="spring.user.sqlservice.updatable.EmbeddedDbSqlRegistry">
+    <property name="dataSource" ref="embeddedDatabase"/>
+  </bean>
 
   <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
     <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>

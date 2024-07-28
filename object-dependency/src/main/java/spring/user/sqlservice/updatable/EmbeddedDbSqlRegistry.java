@@ -1,4 +1,4 @@
-package spring.user.sqlservice;
+package spring.user.sqlservice.updatable;
 
 import java.util.Map;
 import javax.sql.DataSource;
@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import spring.user.exception.SqlNotFoundException;
 import spring.user.exception.SqlUpdateFailureException;
+import spring.user.sqlservice.UpdatableSqlRegistry;
 
 public class EmbeddedDbSqlRegistry implements UpdatableSqlRegistry {
     NamedParameterJdbcTemplate jdbc;
