@@ -72,9 +72,6 @@ public class EmbeddedDbSqlRegistry implements UpdatableSqlRegistry {
                 }
             }
         );
-        for (Map.Entry<String, String> entry : sqlmap.entrySet()) {
-            updateSql(entry.getKey(), entry.getValue());
-        }
     }
 
 }
