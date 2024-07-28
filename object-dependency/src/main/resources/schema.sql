@@ -1,0 +1,1 @@
+create table sqlmap (key_ varchar(255) primary key, sql_ varchar(255));
