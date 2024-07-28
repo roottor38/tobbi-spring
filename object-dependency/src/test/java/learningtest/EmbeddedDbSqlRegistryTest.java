@@ -1,6 +1,10 @@
 package learningtest;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -25,6 +29,21 @@ public class EmbeddedDbSqlRegistryTest extends AbstractUpdateSqlRegistryTest {
     @AfterEach
     public void tearDown() {
         db.shutdown();
+    }
+
+    @Test
+    public void transactionalUpdate() {
+        checkFindResult("SQL1", "SQL2", "SQL3");
+
+        try {
+            Map<String, String> sqlmap = Map.of("SQL1", "Modified1", "SQL9999", "SQL9999");
+            sqlRegistry.updateSql(sqlmap);
+            fail();
+        } catch (Exception e) {
+            // Expected
+        }
+
+        checkFindResult("SQL1", "SQL2", "SQL3");
     }
 
 }
