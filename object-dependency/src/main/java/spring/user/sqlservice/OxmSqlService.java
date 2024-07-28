@@ -62,7 +62,7 @@ public class OxmSqlService implements SqlService {
                 Sqlmap sqlmap = (Sqlmap) this.unmarshaller.unmarshal(source);
 
                 for (SqlType sql : sqlmap.getSql())
-                    sqlRegistry.registrySql(sql.getKey(), sql.getValue());
+                    sqlRegistry.registerSql(sql.getKey(), sql.getValue());
             } catch (IOException e) {
                 throw new IllegalArgumentException(this.sqlmap.getFilename() +
                     "을 가져올 수 없습니다." + e);
