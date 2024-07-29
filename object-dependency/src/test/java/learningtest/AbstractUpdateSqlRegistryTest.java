@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spring.user.exception.SqlNotFoundException;
 import spring.user.sqlservice.UpdatableSqlRegistry;
-import spring.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry;
 
 public abstract class AbstractUpdateSqlRegistryTest {
 
