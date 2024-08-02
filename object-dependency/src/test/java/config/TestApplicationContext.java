@@ -1,32 +1,27 @@
 package config;
 
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
-
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.mail.MailSender;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import spring.dao.SqlService;
 import spring.dao.UserDao;
 import spring.user.service.DummyMailSender;
 import spring.user.service.UserService;
 import spring.user.service.UserServiceImpl;
-import spring.user.sqlservice.OxmSqlService;
-import spring.user.sqlservice.SqlRegistry;
-import spring.user.sqlservice.updatable.EmbeddedDbSqlRegistry;
 
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "spring")
+@Import(SqlServiceContext.class)
+@Profile("test")
 public class TestApplicationContext {
 
        @Autowired
@@ -57,14 +52,6 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public SqlService sqlService() {
-        OxmSqlService sqlService = new OxmSqlService();
-        sqlService.setUnmarshaller(unmarshaller());
-        sqlService.setSqlRegistry(sqlRegistry());
-        return sqlService;
-    }
-
-    @Bean
     public UserService testUserService() {
         return new UserServiceImpl.TestUserServiceImpl();
     }
@@ -72,29 +59,6 @@ public class TestApplicationContext {
     @Bean
     public MailSender mailSender(){
         return new DummyMailSender();
-    }
-
-    @Bean
-    public SqlRegistry sqlRegistry() {
-        EmbeddedDbSqlRegistry sqlRegistry = new EmbeddedDbSqlRegistry();
-        sqlRegistry.setDataSource(embeddedDatabase());
-        return sqlRegistry;
-    }
-
-    @Bean
-    public Unmarshaller unmarshaller() {
-        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setContextPath("spring.user.sqlservice.jxb");
-        return unmarshaller;
-    }
-
-    @Bean
-    public DataSource embeddedDatabase() {
-        return new EmbeddedDatabaseBuilder()
-            .setName("embeddedDatabase")
-            .setType(HSQL)
-            .addScript("/schema.sql")
-            .build();
     }
 
 }
