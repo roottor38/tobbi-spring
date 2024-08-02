@@ -1,19 +1,23 @@
 package spring.user.service;
 
 import java.util.List;
-import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;
 import spring.user.exception.TestUserServiceException;
 
-@Setter
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserDao userDao;
+
+    @Autowired
     private MailSender mailSender;
 
     private static final int MIN_LOGCOUNT_FOR_SILVER = 50;

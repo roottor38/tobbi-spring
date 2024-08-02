@@ -5,6 +5,7 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -16,7 +17,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import spring.dao.SqlService;
 import spring.dao.UserDao;
-import spring.dao.UserDaoJdbc;
 import spring.user.service.DummyMailSender;
 import spring.user.service.UserService;
 import spring.user.service.UserServiceImpl;
@@ -26,10 +26,11 @@ import spring.user.sqlservice.updatable.EmbeddedDbSqlRegistry;
 
 @Configuration
 @EnableTransactionManagement
+@ComponentScan(basePackages = "spring")
 public class TestApplicationContext {
 
-    @Autowired
-    SqlService sqlService;
+       @Autowired
+       private UserDao userDao;
 
     @Bean
     public DataSource dataSource() {
@@ -56,40 +57,21 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public UserDao userDao()  {
-        UserDaoJdbc dao = new UserDaoJdbc();
-        dao.setDataSource(dataSource());
-        dao.setSqlService(this.sqlService);
-        return dao;
-    }
-
-    @Bean
-    public UserService userService() {
-        UserServiceImpl service = new UserServiceImpl();
-        service.setUserDao(userDao());
-        service.setMailSender(mailSender());
-        return service;
-    }
-
-    @Bean
-    public UserService testUserService(){
-        UserServiceImpl.TestUserServiceImpl testService = new UserServiceImpl.TestUserServiceImpl();
-        testService.setUserDao(userDao());
-        testService.setMailSender(mailSender());
-        return testService;
-    }
-
-    @Bean
-    public MailSender mailSender(){
-        return new DummyMailSender();
-    }
-
-    @Bean
     public SqlService sqlService() {
         OxmSqlService sqlService = new OxmSqlService();
         sqlService.setUnmarshaller(unmarshaller());
         sqlService.setSqlRegistry(sqlRegistry());
         return sqlService;
+    }
+
+    @Bean
+    public UserService testUserService() {
+        return new UserServiceImpl.TestUserServiceImpl();
+    }
+
+    @Bean
+    public MailSender mailSender(){
+        return new DummyMailSender();
     }
 
     @Bean

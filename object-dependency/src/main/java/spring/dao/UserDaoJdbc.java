@@ -4,16 +4,20 @@ import java.util.List;
 import javax.sql.DataSource;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.stereotype.Repository;
 import spring.domain.Level;
 import spring.user.User;
 
+@Repository
 public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
-    @Setter
+
+    @Autowired
     private SqlService sqlService;
 
     @Autowired
