@@ -2,23 +2,24 @@ package spring.dao;
 
 import java.util.List;
 import javax.sql.DataSource;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import spring.domain.Level;
 import spring.user.User;
 
-public class UserDaoJdbc implements UserDao{
+public class UserDaoJdbc implements UserDao {
 
-  private JdbcTemplate jdbcTemplate;
-  private SqlService sqlService;
-  public void setSqlService(SqlService sqlService) {
-    this.sqlService = sqlService;
-  }
+    private JdbcTemplate jdbcTemplate;
+    @Setter
+    private SqlService sqlService;
 
-  public void setDataSource(DataSource dataSource) {
-      this.jdbcTemplate = new JdbcTemplate(dataSource);
-  }
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
     private final RowMapper<User> userMapper = (rs, rowNum) -> {
         User user = new User();
@@ -33,7 +34,7 @@ public class UserDaoJdbc implements UserDao{
     };
 
     public void add(User user) {
-        jdbcTemplate.update(sqlService.getSql("userAdd") ,
+        jdbcTemplate.update(sqlService.getSql("userAdd"),
             user.getId(), user.getName(), user.getPassword(),
             user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail()
         );
@@ -41,34 +42,35 @@ public class UserDaoJdbc implements UserDao{
 
     public void update(User user) {
         jdbcTemplate.update(sqlService.getSql("userUpdate"),
-            user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId()
+            user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(),
+            user.getRecommend(), user.getEmail(), user.getId()
         );
     }
 
     public User get(String id) {
         return jdbcTemplate.queryForObject(
             sqlService.getSql("userGet")
-            , new Object[] {id}
+            , new Object[]{id}
             , userMapper
         );
     }
 
     public List<User> getAll() {
         return jdbcTemplate.query(sqlService.getSql("getAll"), (rs, rowNum) -> {
-          userMapper.mapRow(rs, rowNum);
+            userMapper.mapRow(rs, rowNum);
             return userMapper.mapRow(rs, rowNum);
         });
     }
 
     public void deleteAll() {
-      jdbcTemplate.update(sqlService.getSql("deleteAll"));
+        jdbcTemplate.update(sqlService.getSql("deleteAll"));
     }
 
     public int getCount() {
-      return jdbcTemplate.queryForObject(sqlService.getSql("getCount"), Integer.class);
+        return jdbcTemplate.queryForObject(sqlService.getSql("getCount"), Integer.class);
     }
 
-  public void setJdbcTemplate(SimpleDriverDataSource jdbcTemplate) {
-  }
+    public void setJdbcTemplate(SimpleDriverDataSource jdbcTemplate) {
+    }
 
 }

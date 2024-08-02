@@ -18,9 +18,6 @@
     <property name="mailSender" ref="mailSender"/>
   </bean>
 
-  <bean id="testUserService" class="spring.user.service.UserServiceTest$TestUserServiceImpl"
-    parent="userService"/>
-
   <bean id="userServiceImpl" class="spring.user.service.UserServiceImpl">
     <property name="userDao" ref="userDao"/>
     <property name="mailSender" ref="mailSender"/>

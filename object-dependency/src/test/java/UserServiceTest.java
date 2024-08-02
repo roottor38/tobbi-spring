@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import config.TestApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,22 +18,18 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import spring.dao.UserDaoJdbc;
+import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;
+import spring.user.exception.TestUserServiceException;
 import spring.user.service.UserService;
-import spring.user.service.UserServiceImpl;
-import spring.user.service.UserServiceTest.TestUserServiceException;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:applicationContext.xml")
+@ContextConfiguration(classes = TestApplicationContext.class)
 @DirtiesContext
 @Transactional
 public class UserServiceTest {
@@ -43,11 +40,11 @@ public class UserServiceTest {
   @Autowired
   private UserService userService;
 
-//  @Autowired
-//  private MailSender mailSender;
+  @Autowired
+  private MailSender mailSender;
 
   @Autowired
-  private UserDaoJdbc userDao;
+  private UserDao userDao;
 
   @Autowired
   ApplicationContext context;
@@ -78,7 +75,7 @@ public class UserServiceTest {
     userService.add(users.get(1));
   }
 
-  @Test()
+  @Test
   public void readOnlyTransactionAttribute() {
     assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());
   }
@@ -89,7 +86,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void upgradeAllOrNoting() throws Exception {
+  public void upgradeAllOrNoting() {
 
     userDao.deleteAll();
     users.forEach(userDao::add);
