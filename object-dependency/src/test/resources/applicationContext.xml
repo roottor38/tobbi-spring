@@ -1,64 +1,64 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-                      http://www.springframework.org/schema/tx
-                      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-                      http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
-  <tx:annotation-driven/>
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<beans xmlns="http://www.springframework.org/schema/beans"-->
+<!--  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--  xmlns:tx="http://www.springframework.org/schema/tx"-->
+<!--  xmlns:jdbc="http://www.springframework.org/schema/jdbc"-->
+<!--  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd-->
+<!--                      http://www.springframework.org/schema/tx-->
+<!--                      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd-->
+<!--                      http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">-->
+<!--  <tx:annotation-driven/>-->
 
-  <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
-    <jdbc:script location="classpath:schema.sql"/>
-  </jdbc:embedded-database>
+<!--  <jdbc:embedded-database id="embeddedDatabase" type="HSQL">-->
+<!--    <jdbc:script location="classpath:schema.sql"/>-->
+<!--  </jdbc:embedded-database>-->
 
-  <bean id="userService" class="spring.user.service.UserServiceImpl">
-    <property name="userDao" ref="userDao"/>
-    <property name="mailSender" ref="mailSender"/>
-  </bean>
+<!--  <bean id="userService" class="spring.user.service.UserServiceImpl">-->
+<!--    <property name="userDao" ref="userDao"/>-->
+<!--    <property name="mailSender" ref="mailSender"/>-->
+<!--  </bean>-->
 
-  <bean id="userServiceImpl" class="spring.user.service.UserServiceImpl">
-    <property name="userDao" ref="userDao"/>
-    <property name="mailSender" ref="mailSender"/>
-  </bean>
+<!--  <bean id="userServiceImpl" class="spring.user.service.UserServiceImpl">-->
+<!--    <property name="userDao" ref="userDao"/>-->
+<!--    <property name="mailSender" ref="mailSender"/>-->
+<!--  </bean>-->
 
-  <bean id="mailSender" class="spring.user.service.DummyMailSender">
-  </bean>
+<!--  <bean id="mailSender" class="spring.user.service.DummyMailSender">-->
+<!--  </bean>-->
 
-  <bean id="transactionManager"
-    class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-    <property name="dataSource" ref="dataSource"/>
-  </bean>
+<!--  <bean id="transactionManager"-->
+<!--    class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+<!--    <property name="dataSource" ref="dataSource"/>-->
+<!--  </bean>-->
 
-  <bean id="userDao" class="spring.dao.UserDaoJdbc">
-    <property name="dataSource" ref="dataSource"/>
-    <property name="sqlService" ref="sqlService"/>
-  </bean>
+<!--  <bean id="userDao" class="spring.dao.UserDaoJdbc">-->
+<!--    <property name="dataSource" ref="dataSource"/>-->
+<!--    <property name="sqlService" ref="sqlService"/>-->
+<!--  </bean>-->
 
-  <bean id="sqlService" class="spring.user.sqlservice.OxmSqlService">
-    <property name="unmarshaller" ref="unmarshaller"/>
-    <property name="sqlmap" value="classpath:sqlmap.xml"/>
-    <property name="sqlRegistry" ref="sqlRegistry"/>
-  </bean>
-  <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-    <property name="contextPath" value="spring.user.sqlservice.jxb"/>
-  </bean>
-
-
-  <bean id="sqlReader" class="spring.user.sqlservice.JaxbXmlSqlReader" />
-
-  <bean id="sqlRegistry" class="spring.user.sqlservice.updatable.EmbeddedDbSqlRegistry">
-    <property name="dataSource" ref="embeddedDatabase"/>
-  </bean>
-
-  <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-    <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
-    <property name="url" value="jdbc:mysql://localhost:3306/springbook"/>
-    <property name="username" value="spring"/>
-    <property name="password" value="book"/>
-  </bean>
+<!--  <bean id="sqlService" class="spring.user.sqlservice.OxmSqlService">-->
+<!--    <property name="unmarshaller" ref="unmarshaller"/>-->
+<!--    <property name="sqlmap" value="classpath:sqlmap.xml"/>-->
+<!--    <property name="sqlRegistry" ref="sqlRegistry"/>-->
+<!--  </bean>-->
+<!--  <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">-->
+<!--    <property name="contextPath" value="spring.user.sqlservice.jxb"/>-->
+<!--  </bean>-->
 
 
+<!--  <bean id="sqlReader" class="spring.user.sqlservice.JaxbXmlSqlReader" />-->
 
-</beans>
+<!--  <bean id="sqlRegistry" class="spring.user.sqlservice.updatable.EmbeddedDbSqlRegistry">-->
+<!--    <property name="dataSource" ref="embeddedDatabase"/>-->
+<!--  </bean>-->
+
+<!--  <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">-->
+<!--    <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>-->
+<!--    <property name="url" value="jdbc:mysql://localhost:3306/springbook"/>-->
+<!--    <property name="username" value="spring"/>-->
+<!--    <property name="password" value="book"/>-->
+<!--  </bean>-->
+
+
+
+<!--</beans>-->

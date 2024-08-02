@@ -2,7 +2,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import config.TestApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,16 +11,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.Transactional;
+import spring.config.AppContext;
+import spring.config.AppContext.TestAppContext;
 import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;
@@ -29,9 +31,9 @@ import spring.user.exception.TestUserServiceException;
 import spring.user.service.UserService;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestApplicationContext.class)
+@ContextConfiguration(classes = {AppContext.class, TestAppContext.class})
 @DirtiesContext
-@Transactional
+@ActiveProfiles("test")
 public class UserServiceTest {
 
   @Autowired
@@ -52,8 +54,19 @@ public class UserServiceTest {
   @Autowired
   private UserService testUserService;
 
+    @Autowired
+    DefaultListableBeanFactory bf;
+
   private User user;
   private List<User> users;
+
+
+  @Test
+    public void beans() {
+        for (String n : bf.getBeanDefinitionNames()) {
+        System.out.println(n + "\t" + bf.getBean(n).getClass().getName());
+        }
+    }
 
   @BeforeEach
   public void setUp() {

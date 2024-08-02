@@ -2,9 +2,7 @@ package spring.dao;
 
 import java.util.List;
 import javax.sql.DataSource;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -18,7 +16,7 @@ public class UserDaoJdbc implements UserDao {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private SqlService sqlService;
+    SqlService sqlService;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

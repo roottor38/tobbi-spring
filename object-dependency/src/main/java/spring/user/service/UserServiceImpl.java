@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import spring.dao.UserDao;
 import spring.domain.Level;
 import spring.user.User;
@@ -95,7 +94,6 @@ public class UserServiceImpl implements UserService {
         }
 
         @Override
-        @Transactional(readOnly = true)
         public List<User> getAll() {
             System.out.println("Test getAll 실행");
             for (User user : super.getAll()) {
